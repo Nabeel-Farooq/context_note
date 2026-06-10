@@ -11,10 +11,6 @@
 </p>
 <p align="center">Built by <a href="https://v3.vuejs.org/" target="_blank">Vue3</a>.</p>
 
-<p align="right">
-<a href="https://www.producthunt.com/posts/context-note?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-context-note" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=313885&theme=light" alt="Context Note - take notes on the web with their context | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-</p>
-
 
 ## Features
 
