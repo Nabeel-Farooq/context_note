@@ -1,27 +1,48 @@
-import mitt from "mitt";
+import mitt, { Emitter } from "mitt";
 
-const emitter = {
-  ...mitt(),
-  // add `once` function manually
-  // https://github.com/developit/mitt/issues/54
-  once: (type: string, handler: (...args: any) => void) => {
-    const wrappedHandler = (evt: any) => {
-      handler(evt);
-      emitter.off(type, wrappedHandler);
+type EventMap = Record<string, unknown>;
+
+interface ExtendedEmitter extends Emitter<EventMap> {
+  once<T = unknown>(
+    type: string,
+    handler: (event: T) => void
+  ): void;
+}
+
+const mittEmitter = mitt<EventMap>();
+
+const emitter: ExtendedEmitter = {
+  ...mittEmitter,
+
+  once<T = unknown>(
+    type: string,
+    handler: (event: T) => void
+  ): void {
+    const wrappedHandler = (event: unknown) => {
+      this.off(type, wrappedHandler);
+      handler(event as T);
     };
-    emitter.on(type, wrappedHandler);
+
+    this.on(type, wrappedHandler);
   },
 };
 
 export default emitter;
 
-export async function sendEmitAndWait(name: string, data: any) {
-  // wait until the `${name}-cb` event triggers
-  return new Promise((resolve) => {
-    emitter.once(`${name}-cb`, (data) => {
-      resolve(data);
+export function sendEmitAndWait<
+  TRequest = unknown,
+  TResponse = unknown
+>(
+  name: string,
+  data: TRequest
+): Promise<TResponse> {
+  return new Promise<TResponse>((resolve) => {
+    const callbackEvent = `${name}-cb`;
+
+    emitter.once<TResponse>(callbackEvent, (response) => {
+      resolve(response);
     });
-    // send the emit
+
     emitter.emit(name, data);
   });
 }
