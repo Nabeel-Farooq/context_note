@@ -1,18 +1,27 @@
 export interface Coor {
-  x: number;
-  y: number;
+  readonly x: number;
+  readonly y: number;
 }
 
 export interface Rect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  id?: string;
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+  readonly id?: string;
 }
 
 export interface Oper {
-  title: string;
-  onClick: () => void;
-  isConfirm?: boolean;
+  readonly title: string;
+  readonly onClick: () => void;
+  readonly isConfirm?: boolean;
 }
+
+export type Point = Coor;
+
+export interface Size {
+  readonly width: number;
+  readonly height: number;
+}
+
+export interface Rectangle extends Rect {}
