@@ -1,3 +1,3 @@
 export interface Query {
-  noteId: string;
+  readonly noteId: string;
 }
