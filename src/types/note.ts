@@ -1,15 +1,15 @@
 import type { Delta } from "@vueup/vue-quill";
-import { Rect } from './common';
+import type { Rect } from "./common";
 
 export interface Note {
-  id: string;
-  createTime: number;
-  updateTime: number;
-  link: string;
-  rawLink: string;
-  linkTitle: string;
-  content: string;
-  tags: string[];
-  rects: Rect[];
-  note?: Delta;
+  readonly id: string;
+  readonly createTime: number;
+  readonly updateTime: number;
+  readonly link: string;
+  readonly rawLink: string;
+  readonly linkTitle: string;
+  readonly content: string;
+  readonly tags: readonly string[];
+  readonly rects: readonly Rect[];
+  readonly note?: Delta;
 }
