@@ -1,7 +1,9 @@
-import appendQuery from 'append-query';
+import appendQuery from "append-query";
 
-export const isObject = (value: unknown): value is Record<string, unknown> => {
-  return value !== null && typeof value === 'object';
+export const isObject = (
+  value: unknown
+): value is Record<string, unknown> => {
+  return value !== null && typeof value === "object";
 };
 
 export const getObjectType = (value: unknown): string => {
@@ -9,18 +11,13 @@ export const getObjectType = (value: unknown): string => {
 };
 
 export const removeUrlPostfix = (url: string): string => {
-  const queryIndex = url.indexOf('?');
-  const hashIndex = url.indexOf('#');
+  const queryIndex = url.indexOf("?");
+  const hashIndex = url.indexOf("#");
 
-  let endIndex = url.length;
-
-  if (queryIndex !== -1) {
-    endIndex = queryIndex;
-  }
-
-  if (hashIndex !== -1 && hashIndex < endIndex) {
-    endIndex = hashIndex;
-  }
+  const endIndex = Math.min(
+    queryIndex === -1 ? url.length : queryIndex,
+    hashIndex === -1 ? url.length : hashIndex
+  );
 
   return url.slice(0, endIndex);
 };
@@ -28,15 +25,13 @@ export const removeUrlPostfix = (url: string): string => {
 export const getUrlQuery = (
   url: string
 ): Record<string, string> => {
-  const queryIndex = url.indexOf('?');
+  const queryIndex = url.indexOf("?");
 
   if (queryIndex === -1) {
     return {};
   }
 
-  const queryString = url
-    .slice(queryIndex + 1)
-    .split('#')[0];
+  const queryString = url.slice(queryIndex + 1).split("#", 1)[0];
 
   return Object.fromEntries(
     new URLSearchParams(queryString).entries()
@@ -47,8 +42,8 @@ export const getUrlQuery = (
 //   url: string,
 //   query: Record<string, unknown>
 // ) => {
-//   return appendQuery(url, query)
-// }
+//   return appendQuery(url, query);
+// };
 
 export const appendUrlQuery = (
   baseUrl: string,
@@ -56,11 +51,10 @@ export const appendUrlQuery = (
 ): string => {
   try {
     const url = new URL(baseUrl);
-    const searchParams = url.searchParams;
 
     for (const [key, value] of Object.entries(params)) {
-      if (value !== undefined && value !== null) {
-        searchParams.set(key, String(value));
+      if (value != null) {
+        url.searchParams.set(key, String(value));
       }
     }
 
