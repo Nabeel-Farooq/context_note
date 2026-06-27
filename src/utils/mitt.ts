@@ -19,11 +19,11 @@ const emitter: ExtendedEmitter = {
     handler: (event: T) => void
   ): void {
     const wrappedHandler = (event: unknown) => {
-      this.off(type, wrappedHandler);
+      mittEmitter.off(type, wrappedHandler);
       handler(event as T);
     };
 
-    this.on(type, wrappedHandler);
+    mittEmitter.on(type, wrappedHandler);
   },
 };
 
@@ -39,10 +39,7 @@ export function sendEmitAndWait<
   return new Promise<TResponse>((resolve) => {
     const callbackEvent = `${name}-cb`;
 
-    emitter.once<TResponse>(callbackEvent, (response) => {
-      resolve(response);
-    });
-
+    emitter.once<TResponse>(callbackEvent, resolve);
     emitter.emit(name, data);
   });
 }
