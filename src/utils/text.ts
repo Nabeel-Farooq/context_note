@@ -13,16 +13,16 @@ const getValue = (item: SearchableItem, key?: string): string => {
 };
 
 const getChinesePart = (text: string): string => {
-  return text.replace(/[A-Za-z]/g, "");
+  const match = text.match(/[\u4E00-\u9FFF]+/g);
+  return match?.join("") ?? "";
 };
 
-const toPinyinString = (text: string): string => {
-  return pinyin(text, {
+const toPinyinString = (text: string): string =>
+  pinyin(text, {
     style: STYLE_NORMAL,
   })
     .flat()
     .join("");
-};
 
 export function filterArrBySearchText<T extends SearchableItem>(
   arr: T[],
@@ -35,13 +35,13 @@ export function filterArrBySearchText<T extends SearchableItem>(
   }
 
   const chinesePart = getChinesePart(text);
-  const containsChinese = chinesePart.length > 0 && isChinese(chinesePart);
+  const containsChinese =
+    chinesePart.length > 0 && isChinese(chinesePart);
 
   if (containsChinese) {
-    return arr.filter((element) => {
-      const item = getValue(element, key);
-      return item.includes(chinesePart);
-    });
+    return arr.filter((element) =>
+      getValue(element, key).includes(chinesePart)
+    );
   }
 
   const normalizedSearchText = ignoreCase
@@ -51,11 +51,9 @@ export function filterArrBySearchText<T extends SearchableItem>(
   return arr.filter((element) => {
     const item = getValue(element, key);
 
-    let pinyinText = toPinyinString(item);
-
-    if (ignoreCase) {
-      pinyinText = pinyinText.toLowerCase();
-    }
+    const pinyinText = ignoreCase
+      ? toPinyinString(item).toLowerCase()
+      : toPinyinString(item);
 
     return pinyinText.includes(normalizedSearchText);
   });
@@ -74,21 +72,12 @@ export function transArrInfoLetterMap<T extends SearchableItem>(
       continue;
     }
 
-    const parts = pinyin(item, {
-      style: STYLE_NORMAL,
-    });
+    const firstLetter =
+      toPinyinString(item).charAt(0).toUpperCase() || "_";
 
-    if (!parts.length) {
-      continue;
-    }
-
-    let firstLetter = parts[0]?.[0]?.[0]?.toUpperCase() ?? "_";
-
-    if (!/^[A-Z]$/.test(firstLetter)) {
-      firstLetter = "_";
-    }
-
-    (result[firstLetter] ??= []).push(element);
+    (result[/^[A-Z]$/.test(firstLetter) ? firstLetter : "_"] ??= []).push(
+      element
+    );
   }
 
   return result;
