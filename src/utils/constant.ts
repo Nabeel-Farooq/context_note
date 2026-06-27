@@ -16,8 +16,9 @@ export enum AppWidth {
 export const APP_WIDTH_VALUES = Object.freeze({
   normal: AppWidth.NORMAL,
   expanded: AppWidth.EXPANDED,
-});
+} as const);
 
-export const STORAGE_KEYS = Object.freeze(
-  Object.values(StorageKeys)
-);
+export const STORAGE_KEYS = Object.freeze([
+  StorageKeys.NOTES,
+  StorageKeys.TAGS,
+] as const);
